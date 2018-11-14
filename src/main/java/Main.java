@@ -1,11 +1,12 @@
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class Main {
@@ -30,19 +31,17 @@ public class Main {
         WebElement showVideoButton = driver.findElement(By.id("showVideo"));
         WebElement video = driver.findElement(By.id("gum-local"));
 
-        System.out.println(video.getAttribute("height"));
-        System.out.println(video.getAttribute("width"));
-        System.out.println(video.getAttribute("paused"));
-        System.out.println(video.getAttribute("autoplay"));
+        Assert.assertEquals(video.getAttribute("videoHeight"), "0");
+        Assert.assertEquals(video.getAttribute("videoWidth"), "0");
+        Assert.assertEquals(video.getAttribute("paused"), "true");
 
         showVideoButton.click();
 
-//        JavascriptExecutor js = (JavascriptExecutor) driver;
-//        js.executeScript("document.querySelector('#gum-local').pause()", video);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        wait.until(ExpectedConditions.attributeToBe(video, "readyState", "4"));
 
-        System.out.println(video.getAttribute("height"));
-        System.out.println(video.getAttribute("width"));
-        System.out.println(video.getAttribute("paused"));
-        System.out.println(video.getAttribute("autoplay"));
+        Assert.assertEquals(video.getAttribute("videoHeight"), "480");
+        Assert.assertEquals(video.getAttribute("videoWidth"), "640");
+        Assert.assertNull(video.getAttribute("paused"));
     }
 }
